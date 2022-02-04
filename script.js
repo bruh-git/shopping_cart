@@ -1,4 +1,5 @@
 const { fetchProducts } = require('./helpers/fetchProducts');
+const getSavedCartItems = require('./helpers/getSavedCartItems');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -13,7 +14,7 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-
+// req.1 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -41,5 +42,18 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-window.onload = () => { };
+async function returnProduct() {
+  const computador = await fetchProducts('computador');
+  computador.results.forEach((product) => {
+    const obj = {
+      sku: product.id,
+      name: product.title,
+      image: product.thumbnaill,
+    };
+    const section = document.querySelectorAll('.items');
+    section.appendChild(createProductItemElement(obj));
+  });
+}
+window.onload = () => {
+  returnProduct();
+};
