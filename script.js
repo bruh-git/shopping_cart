@@ -42,12 +42,13 @@ function createProductItemElement({ sku, name, image }) {
 async function returnProduct() {
   const computador = await fetchProducts('computador');
   computador.results.forEach((product) => {
+    console.log(product);
     const obj = {
       sku: product.id,
       name: product.title,
-      image: product.thumbnaill,
+      image: product.thumbnail,
     };
-    const section = document.querySelectorAll('.items');
+    const section = document.querySelector('.items');
     section.appendChild(createProductItemElement(obj));
   });
 }
