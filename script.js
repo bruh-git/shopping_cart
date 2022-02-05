@@ -70,7 +70,16 @@ function clickButton() {
     });
   });
 }
+const deletCart = () => {
+  const itenCart = document.querySelector('.cart__items');
+  itenCart.innerHTML = '';
+};
+const emptycart = () => {
+  const empty = document.querySelector('.empty-cart');
+  empty.addEventListener('click', deletCart);
+};
 window.onload = async () => {
   await returnProduct();
   clickButton();
+  emptycart();
 };
