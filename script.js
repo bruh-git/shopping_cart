@@ -11,7 +11,7 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-// req.1 
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -24,25 +24,22 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function cartItemClickListener(event) {
+  event.target.remove();
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+// req.2 essa função abaixo já estava implementada.
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
 async function returnProduct() {
   const computador = await fetchProducts('computador');
   computador.results.forEach((product) => {
-    console.log(product);
     const obj = {
       sku: product.id,
       name: product.title,
@@ -52,6 +49,28 @@ async function returnProduct() {
     section.appendChild(createProductItemElement(obj));
   });
 }
-window.onload = () => {
-  returnProduct();
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+ const getItems = async (id) => {
+  const ol = document.querySelectorAll('.cart__items')[0];
+  const itemJSON = await fetchItem(id);
+  const { id: sku, title: name, price: salePrice } = itemJSON;
+  ol.appendChild(createCartItemElement({ sku, name, salePrice }));
+};
+
+function clickButton() {
+  const items = document.querySelectorAll('.item');
+  items.forEach((element) => {
+  const button = element.querySelector('button');
+  const sku = getSkuFromProductItem(element);
+    button.addEventListener('click', () => {
+      getItems(sku);
+    });
+  });
+}
+window.onload = async () => {
+  await returnProduct();
+  clickButton();
 };
